@@ -20,19 +20,16 @@ public class Node
     
     public Node()
     {
-	move = -1;
+	move = 0;
+	nextPlayer = 0;
 	parent = null;
-	children = null;	
+	children = new ArrayList<Node>();	
     }
     
-    void addChild(int p_Move, int p_NextPlayer)
+    void addChild(Node p_Node)
     {
-	Node node = new Node();
-	node.move = p_Move;
-	node.nextPlayer = p_NextPlayer;
-	
-	node.parent = this;
-	children.add(node);
+	p_Node.parent = this;
+	children.add(p_Node);
     }
     
     void removeChild(int p_Child)

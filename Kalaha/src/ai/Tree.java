@@ -21,14 +21,13 @@ public class Tree
     
     public Tree(GameState p_GameState, int p_Depth)
     {	
-	rootGameState = p_GameState.clone();
+	rootGameState = p_GameState;
 	depth = p_Depth;
 	
 	//currentPlayer = rootGameState.getNextPlayer() % 2 + 1;
 	
-	root.move = -1;
+	root = new Node();
 	root.nextPlayer = rootGameState.getNextPlayer();
-	root.parent = null;
 	
 	build(root, rootGameState, 0);
     }
@@ -40,13 +39,22 @@ public class Tree
 	
 	for(int i = 0; i < 6; ++i)
 	{
-	    GameState possibleGameState = p_PossibleGameState.clone();
+	    GameState possibleGameState = p_PossibleGameState;
 	    
 	    if(possibleGameState.getSeeds(i, p_Node.nextPlayer) > 0);
 	    {
+		Node tempNode = new Node();
+		
+		tempNode.parent = p_Node;
+		tempNode.move = i;
+		
 		possibleGameState.makeMove(i);
 		
-		p_Node.addChild(i, possibleGameState.getNextPlayer());
+		tempNode.nextPlayer = possibleGameState.getNextPlayer();
+		
+		p_Node.addChild(tempNode);
+		
+		build(tempNode, possibleGameState.clone(), p_CurrentDepth + 1);
 	    }
 	}
     }
