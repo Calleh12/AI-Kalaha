@@ -37,25 +37,26 @@ public class Tree
 	if(p_CurrentDepth > depth)
 	    return;
 	
-	for(int i = 0; i < 6; ++i)
+	for(int i = 1; i < 7; ++i)
 	{
 	    GameState possibleGameState = p_PossibleGameState;
 	    
-	    if(possibleGameState.getSeeds(i, p_Node.nextPlayer) > 0);
-	    {
-		Node tempNode = new Node();
+	    if(possibleGameState.getSeeds(i, p_Node.nextPlayer) == 0)
+		continue;
 		
-		tempNode.parent = p_Node;
-		tempNode.move = i;
-		
-		possibleGameState.makeMove(i);
-		
-		tempNode.nextPlayer = possibleGameState.getNextPlayer();
-		
-		p_Node.addChild(tempNode);
-		
-		build(tempNode, possibleGameState.clone(), p_CurrentDepth + 1);
-	    }
+	    Node tempNode = new Node();
+
+	    tempNode.parent = p_Node;
+	    tempNode.move = i;
+
+	    possibleGameState.makeMove(i);
+
+	    tempNode.nextPlayer = possibleGameState.getNextPlayer();
+
+	    p_Node.addChild(tempNode);
+
+	    build(tempNode, possibleGameState.clone(), p_CurrentDepth + 1);
+
 	}
     }
 }

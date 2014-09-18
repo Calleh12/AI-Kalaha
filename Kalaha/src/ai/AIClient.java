@@ -214,7 +214,7 @@ public class AIClient implements Runnable
     {
         int myMove = getRandom();
 	
-	Tree tree = new Tree(currentBoard.clone(), 7);
+	Tree tree = new Tree(currentBoard.clone(), 8);
 	
         return myMove;
     }
