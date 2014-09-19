@@ -5,6 +5,7 @@
  */
 package ai;
 
+import kalaha.*;
 import java.util.ArrayList;
 
 /**
@@ -14,14 +15,14 @@ import java.util.ArrayList;
 public class Node
 {
     public int move;
-    public int nextPlayer;
+    GameState gameState;
+    //public int nextPlayer;
     public Node parent;
     public ArrayList<Node> children;
     
     public Node()
     {
 	move = 0;
-	nextPlayer = 0;
 	parent = null;
 	children = new ArrayList<Node>();	
     }

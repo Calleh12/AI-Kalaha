@@ -14,6 +14,30 @@ import kalaha.*;
  */
 public class Tree 
 {
+    enum Move
+    {
+	TERMINAL(-1),
+	CUTOFF(0),
+	FIRST(1),
+	SECOND(2),
+	THREE(3),
+	FOUR(4),
+	FIVE(5),
+	SIX(6);
+	
+	private int move;
+	
+	Move(int p_Move)
+	{
+	    move = p_Move;
+	}
+	
+	public int getMove()
+	{
+	    return move;   
+	}
+    }
+    
     private Node root;
     private GameState rootGameState;
     int currentPlayer;
@@ -27,21 +51,23 @@ public class Tree
 	//currentPlayer = rootGameState.getNextPlayer() % 2 + 1;
 	
 	root = new Node();
-	root.nextPlayer = rootGameState.getNextPlayer();
+	root.gameState = rootGameState;
 	
-	expand(root, rootGameState, 0);
+	DepthLimitedSearch(root, 0);
     }
     
-    public void expand(Node p_Node, GameState p_PossibleGameState, int p_CurrentDepth)
+    
+    
+    public void DepthLimitedSearch(Node p_Node, int p_CurrentDepth)
     {
 	if(p_CurrentDepth > depth)
 	    return;
 	
+	GameState possibleGameState = p_Node.gameState;
+	
 	for(int i = 1; i < 7; ++i)
-	{
-	    GameState possibleGameState = p_PossibleGameState.clone();
-	    
-	    if(possibleGameState.getSeeds(i, p_Node.nextPlayer) == 0)
+	{	    
+	    if(!possibleGameState.moveIsPossible(i))
 		continue;
 		
 	    Node tempNode = new Node();
@@ -49,13 +75,13 @@ public class Tree
 	    tempNode.parent = p_Node;
 	    tempNode.move = i;
 
-	    possibleGameState.makeMove(i);
+	    p_Node.gameState.makeMove(i);
 
-	    tempNode.nextPlayer = possibleGameState.getNextPlayer();
+	    tempNode.gameState = possibleGameState.clone();
 
 	    p_Node.addChild(tempNode);
 
-	    expand(tempNode, possibleGameState, p_CurrentDepth + 1);
+	    DepthLimitedSearch(tempNode, p_CurrentDepth + 1);
 
 	}
     }
