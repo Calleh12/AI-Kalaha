@@ -215,9 +215,14 @@ public class AIClient implements Runnable
         int myMove = getRandom();	
 	Tree tree = new Tree(currentBoard);
 	
-	tree.iterativeDeepening(5.0f, 3, currentBoard);
+	tree.iterativeDeepening(5, 3);
 	
-        return myMove;
+	/*todo: When tree is built and utility values propogated 
+		return here and loop through the rootnode's children
+		and determine which move is the best. Could be value
+		or to know if a terminal state lies ahead.
+	*/
+        return 
     }
     
    

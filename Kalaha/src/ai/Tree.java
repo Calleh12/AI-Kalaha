@@ -7,6 +7,7 @@ package ai;
 
 import java.util.ArrayList;
 import kalaha.*;
+import ai.Evaluate;
 
 /**
  *
@@ -14,6 +15,11 @@ import kalaha.*;
  */
 public class Tree 
 {
+    class Result
+    {
+	
+    }
+    
     enum Move
     {
 	TERMINAL(-1),
@@ -38,6 +44,7 @@ public class Tree
 	}
     }
     
+    private Evaluate eval;
     private Node root;
     private GameState rootGameState;
     int currentPlayer;
@@ -45,6 +52,8 @@ public class Tree
     
     public Tree(GameState p_GameState)
     {	
+	eval = new Evaluate();
+	
 	rootGameState = p_GameState;
 	
 	//currentPlayer = rootGameState.getNextPlayer() % 2 + 1;
@@ -58,12 +67,14 @@ public class Tree
     public int depthLimitedSearch(Node p_Node, int p_Depth)
     {
 	if(p_Depth <= 0)
-	    return Move.CUTOFF.getValue();
-		
+	{
+	    return eval.evaluateMove();
+	}
+	
 	GameState possibleGameState = p_Node.gameState;
 	
 	if(possibleGameState.gameEnded())
-	    return Move.TERMINAL.getValue();
+	    return eval.evaluateMove();
 	
 	for(int i = 1; i < 7; ++i)
 	{	    
@@ -81,7 +92,9 @@ public class Tree
 
 	    p_Node.addChild(tempNode);
 
-	    depthLimitedSearch(tempNode, p_Depth - 1);
+	    p_Node.value = depthLimitedSearch(tempNode, p_Depth - 1);
+	    
+	    return p_Node.value;
 	}
 	
 	return 100;
@@ -92,20 +105,21 @@ public class Tree
 	depth = p_StartDepth;
 	long startTimer = System.currentTimeMillis();
 	
-	int move;
+	int move = -1;
 	
 	double time = 0;
+	double lastTime = 0;
 	
 	while(p_MaxTime >= time)
-	{	    
-	    move = depthLimitedSearch(root, depth);
-	    
+	{
+	    move = depthLimitedSearch(root, depth);	
+    
 	    long tot = System.currentTimeMillis() - startTimer;
 	    time = (double)tot / (double)1000;
-	    
+	    lastTime = time;
 	    depth++;
 	}
-	    
+	return move;
     }
     
     public Node getRoot()

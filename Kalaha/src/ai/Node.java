@@ -15,6 +15,7 @@ import java.util.ArrayList;
 public class Node
 {
     public int move;
+    public int value;
     GameState gameState;
     //public int nextPlayer;
     public Node parent;
@@ -23,6 +24,7 @@ public class Node
     public Node()
     {
 	move = 0;
+	value = 0;
 	parent = null;
 	children = new ArrayList<Node>();	
     }
