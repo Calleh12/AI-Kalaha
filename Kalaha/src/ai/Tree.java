@@ -32,7 +32,7 @@ public class Tree
 	    move = p_Move;
 	}
 	
-	public int getMove()
+	public int getValue()
 	{
 	    return move;   
 	}
@@ -43,27 +43,27 @@ public class Tree
     int currentPlayer;
     int depth;
     
-    public Tree(GameState p_GameState, int p_Depth)
+    public Tree(GameState p_GameState)
     {	
 	rootGameState = p_GameState;
-	depth = p_Depth;
 	
 	//currentPlayer = rootGameState.getNextPlayer() % 2 + 1;
 	
 	root = new Node();
 	root.gameState = rootGameState;
 	
-	DepthLimitedSearch(root, 0);
+	//DepthLimitedSearch(root, p_Depth);
     }
     
-    
-    
-    public void DepthLimitedSearch(Node p_Node, int p_CurrentDepth)
+    public int depthLimitedSearch(Node p_Node, int p_Depth)
     {
-	if(p_CurrentDepth > depth)
-	    return;
-	
+	if(p_Depth <= 0)
+	    return Move.CUTOFF.getValue();
+		
 	GameState possibleGameState = p_Node.gameState;
+	
+	if(possibleGameState.gameEnded())
+	    return Move.TERMINAL.getValue();
 	
 	for(int i = 1; i < 7; ++i)
 	{	    
@@ -81,8 +81,35 @@ public class Tree
 
 	    p_Node.addChild(tempNode);
 
-	    DepthLimitedSearch(tempNode, p_CurrentDepth + 1);
-
+	    depthLimitedSearch(tempNode, p_Depth - 1);
 	}
+	
+	return 100;
+    }
+    
+    public int iterativeDeepening(double p_MaxTime, int p_StartDepth)
+    {
+	depth = p_StartDepth;
+	long startTimer = System.currentTimeMillis();
+	
+	int move;
+	
+	double time = 0;
+	
+	while(p_MaxTime >= time)
+	{	    
+	    move = depthLimitedSearch(root, depth);
+	    
+	    long tot = System.currentTimeMillis() - startTimer;
+	    time = (double)tot / (double)1000;
+	    
+	    depth++;
+	}
+	    
+    }
+    
+    public Node getRoot()
+    {
+	return root;
     }
 }

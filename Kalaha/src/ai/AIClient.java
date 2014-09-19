@@ -212,12 +212,15 @@ public class AIClient implements Runnable
      */
     public int getMove(GameState currentBoard)
     {
-        int myMove = getRandom();
+        int myMove = getRandom();	
+	Tree tree = new Tree(currentBoard);
 	
-	Tree tree = new Tree(currentBoard.clone(), 7);
+	tree.iterativeDeepening(5.0f, 3, currentBoard);
 	
         return myMove;
     }
+    
+   
     /**
      * Returns a random ambo number (1-6) used when making
      * a random move.
