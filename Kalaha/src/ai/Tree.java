@@ -29,17 +29,17 @@ public class Tree
 	root = new Node();
 	root.nextPlayer = rootGameState.getNextPlayer();
 	
-	build(root, rootGameState, 0);
+	expand(root, rootGameState, 0);
     }
     
-    public void build(Node p_Node, GameState p_PossibleGameState, int p_CurrentDepth)
+    public void expand(Node p_Node, GameState p_PossibleGameState, int p_CurrentDepth)
     {
 	if(p_CurrentDepth > depth)
 	    return;
 	
 	for(int i = 1; i < 7; ++i)
 	{
-	    GameState possibleGameState = p_PossibleGameState;
+	    GameState possibleGameState = p_PossibleGameState.clone();
 	    
 	    if(possibleGameState.getSeeds(i, p_Node.nextPlayer) == 0)
 		continue;
@@ -55,7 +55,7 @@ public class Tree
 
 	    p_Node.addChild(tempNode);
 
-	    build(tempNode, possibleGameState.clone(), p_CurrentDepth + 1);
+	    expand(tempNode, possibleGameState, p_CurrentDepth + 1);
 
 	}
     }

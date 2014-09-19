@@ -218,11 +218,6 @@ public class AIClient implements Runnable
 	
         return myMove;
     }
-    
-    public void createGameTree(GameState p_CurrentBoard)
-    {
-        GameState currentBoard = p_CurrentBoard.clone();
-    }
     /**
      * Returns a random ambo number (1-6) used when making
      * a random move.
