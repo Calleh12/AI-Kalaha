@@ -38,7 +38,7 @@ public class Minimax {
     
     public int depthLimitedSearch(Node p_Node, int p_Depth)
     {
-	GameState possibleGameState = p_Node.gameState.clone();
+	GameState possibleGameState = p_Node.gameState;
 	
 	if(p_Depth <= 0)
 	{
@@ -59,10 +59,11 @@ public class Minimax {
 	    tempNode.move = i;
 
 	    p_Node.gameState.makeMove(i);
+	    tempNode.gameState = possibleGameState.clone();
 
 	    p_Node.addChild(tempNode);
 
-	    tempNode.value += depthLimitedSearch(tempNode, p_Depth - 1);
+	    tempNode.value = depthLimitedSearch(tempNode, p_Depth - 1);
 	    
 	    return tempNode.value;
 	}
@@ -84,12 +85,7 @@ public class Minimax {
     
 	    long tot = System.currentTimeMillis() - startTimer;
 	    time = (double)tot / (double)1000;
-	    
-	    if(!(p_MaxTime >= time + lastTime))
-	    {
-		break;
-	    }
-	    
+	    	    
 	    lastTime = time;
 	    m_Depth++;
 	}

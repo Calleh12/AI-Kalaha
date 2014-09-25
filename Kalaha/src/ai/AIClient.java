@@ -216,7 +216,7 @@ public class AIClient implements Runnable
 	
 	Minimax minime = new Minimax(currentBoard, player);
 	
-	minime.iterativeDeepening(5, 3);
+	minime.iterativeDeepening(1, 3);
 	
 	/*todo: When tree is built and utility values propogated 
 		return here and loop through the rootnode's children
