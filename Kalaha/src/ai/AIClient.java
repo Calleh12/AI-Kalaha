@@ -214,9 +214,12 @@ public class AIClient implements Runnable
     {
         int myMove = getRandom();
 	
-	Minimax minime = new Minimax(currentBoard, player);
+	Minimax minime = new Minimax(currentBoard, player, text);
 	
-	minime.iterativeDeepening(1, 3);
+	//minime.depthLimitedSearch(minime.m_Tree.getRoot(), 5);
+	minime.iterativeDeepening(5, 3, currentBoard);
+	
+	Node root = minime.m_Tree.getRoot();
 	
 	/*todo: When tree is built and utility values propogated 
 		return here and loop through the rootnode's children
