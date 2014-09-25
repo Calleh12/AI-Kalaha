@@ -212,17 +212,18 @@ public class AIClient implements Runnable
      */
     public int getMove(GameState currentBoard)
     {
-        int myMove = getRandom();	
-	Tree tree = new Tree(currentBoard);
+        int myMove = getRandom();
 	
-	tree.iterativeDeepening(5, 3);
+	Minimax minime = new Minimax(currentBoard, player);
+	
+	minime.iterativeDeepening(5, 3);
 	
 	/*todo: When tree is built and utility values propogated 
 		return here and loop through the rootnode's children
 		and determine which move is the best. Could be value
 		or to know if a terminal state lies ahead.
 	*/
-        return 
+        return myMove;
     }
     
    

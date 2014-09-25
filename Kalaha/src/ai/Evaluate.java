@@ -19,12 +19,12 @@ public class Evaluate
 	
     }
     
-    public int EvaluateTerminal()
+    public int EvaluateTerminal(GameState p_GameState, int p_Player)
     {
 	return 0;
     }
     
-    public int evaluateMove()
+    public int evaluateMove(GameState p_GameState, int p_Player)
     {
 	return 0;
     }
