@@ -23,7 +23,7 @@ public class Node
     
     public Node()
     {
-	move = 0;
+	move = -2;
 	value = 0;
 	parent = null;
 	children = new ArrayList<Node>();	

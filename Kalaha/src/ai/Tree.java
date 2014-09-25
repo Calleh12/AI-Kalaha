@@ -15,30 +15,6 @@ import ai.Evaluate;
  */
 public class Tree 
 {
-    enum Move
-    {
-	TERMINAL(-1),
-	CUTOFF(0),
-	FIRST(1),
-	SECOND(2),
-	THREE(3),
-	FOUR(4),
-	FIVE(5),
-	SIX(6);
-	
-	private int move;
-	
-	Move(int p_Move)
-	{
-	    move = p_Move;
-	}
-	
-	public int getValue()
-	{
-	    return move;   
-	}
-    }
-    
     private Node m_Root;
    
     public Tree(GameState p_GameState)

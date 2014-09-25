@@ -216,17 +216,25 @@ public class AIClient implements Runnable
 	
 	Minimax minime = new Minimax(currentBoard, player, text);
 	
-	//minime.depthLimitedSearch(minime.m_Tree.getRoot(), 5);
-	minime.iterativeDeepening(5, 3, currentBoard);
+	minime.depthLimitedSearch(minime.m_Tree.getRoot(), 3, 0);
+	//minime.iterativeDeepening(5, 5, currentBoard);
 	
 	Node root = minime.m_Tree.getRoot();
+	
+	
+	int bestMove = -1;
+	for(int i = 0; i < root.children.size(); i++)
+	{
+	    if(bestMove < root.children.get(i).value)
+		bestMove = root.children.get(i).move;
+	}
 	
 	/*todo: When tree is built and utility values propogated 
 		return here and loop through the rootnode's children
 		and determine which move is the best. Could be value
 		or to know if a terminal state lies ahead.
 	*/
-        return myMove;
+        return bestMove;
     }
     
    
