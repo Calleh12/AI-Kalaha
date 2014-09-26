@@ -216,8 +216,8 @@ public class AIClient implements Runnable
 	
 	Minimax minime = new Minimax(currentBoard, player, text);
 	
-	minime.depthLimitedSearch(minime.m_Tree.getRoot(), 8, 0);
-	//minime.iterativeDeepening(5, 2, currentBoard);
+	//minime.depthLimitedSearch(minime.m_Tree.getRoot(), 8, 0);
+	minime.iterativeDeepening(5, 2, currentBoard);
 	
 	Node root = minime.m_Tree.getRoot();
 	
