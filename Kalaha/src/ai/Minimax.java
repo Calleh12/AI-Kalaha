@@ -16,9 +16,9 @@ public class Minimax
 {
     public enum Move
     {
-	FAILUIRE(-2),
-	TERMINAL(-1),
-	CUTOFF(0),
+	FAILUIRE(-3),
+	TERMINAL(-2),
+	CUTOFF(-1),
 	FIRST(1),
 	SECOND(2),
 	THREE(3),
@@ -43,6 +43,7 @@ public class Minimax
     {
 	public int move;
 	public int value;
+        public int state;
     }
     
     Tree m_Tree;
@@ -72,33 +73,22 @@ public class Minimax
 	//currentPlayer = rootGameState.getNextPlayer() % 2 + 1;
     }
     
-    public Result depthLimitedSearch(Node p_Node, int p_Depth, long p_StartTimer)
+    public int depthLimitedSearch(Node p_Node, int p_Depth, long p_StartTimer)
     {
-	Result res = new Result();
-	
-	long tot = System.currentTimeMillis() - p_StartTimer;
-	double time = (double)tot / (double)1000;
-	if( m_MaxTime <= time )
-	{
-	    res.move = Move.CUTOFF.getValue();
-	    //return res;
-	}
-	
 	GameState possibleGameState = p_Node.gameState;
 	if(p_Node.move != Move.FAILUIRE.getValue())
 	    possibleGameState.makeMove(p_Node.move);
-	
-	res.move = p_Node.move;
+        
+        if(possibleGameState.gameEnded())
+	{
+	    return m_Eval.EvaluateTerminal(possibleGameState, m_Player);
+
+	}
+        
 	if(p_Depth <= 0)
 	{
-	    res.value = m_Eval.evaluateMove(p_Node, possibleGameState, m_Player);
-	    return res;
-	}
-	
-	if(possibleGameState.gameEnded())
-	{
-	    res.value = m_Eval.EvaluateTerminal(possibleGameState, m_Player);
-	    return res;
+	    return m_Eval.evaluateMove(p_Node, possibleGameState, m_Player);
+
 	}
 	
 	int utility = 0;
@@ -128,8 +118,8 @@ public class Minimax
 	    
 	    p_Node.addChild(tempNode);
 
-	    res = depthLimitedSearch(tempNode, p_Depth - 1, p_StartTimer);
-	    utility = res.value;
+	    utility = depthLimitedSearch(tempNode, p_Depth - 1, p_StartTimer);
+            tempNode.value = utility;
 	    
 	    if(p_Node.gameState.getNextPlayer() == m_Player)
 		utility = Max(utility, prevUtility);
@@ -137,36 +127,30 @@ public class Minimax
 		utility = Min(utility, prevUtility);
 	    
 	    prevUtility = utility;
-	    p_Node.value = utility;
 	}
-	
-	return res;
+        
+        p_Node.value = utility;
+	return utility;
     }
     
     public void iterativeDeepening(double p_MaxTime, int p_StartDepth, GameState p_GameState)
     {
 	m_MaxTime = p_MaxTime;
 	m_Depth = p_StartDepth;
-	
-	Result res = new Result();
-	
-	long startTimer = System.currentTimeMillis();
-	int move = -1;
-	
+
 	double time = 0;
 	double lastTime = 0;
+	
+	long startTimer = System.currentTimeMillis();
 	
 	while(p_MaxTime >= time)
 	{
 	    m_Tree = null;
 	    m_Tree = new Tree(p_GameState);
-	    res = depthLimitedSearch(m_Tree.getRoot(), m_Depth, startTimer);
+            
+	    depthLimitedSearch(m_Tree.getRoot(), m_Depth, startTimer);
+                        
 	    m_Depth++;
-	    
-	    if(p_MaxTime < (time + lastTime*2) || res.move == Move.CUTOFF.getValue())
-	    {
-		//break;
-	    }
 	    
 	    long tot = System.currentTimeMillis() - startTimer;
 	    time = (double)tot / (double)1000;
@@ -175,6 +159,7 @@ public class Minimax
 	}
 	
 	addText("m_Depth: " + m_Depth);
+	addText("Time: " + time);
     }
     
     private int Max(int p_Util, int p_PrevUtil)
