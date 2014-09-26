@@ -82,29 +82,21 @@ public class Minimax
         if(possibleGameState.gameEnded())
 	{
 	    return m_Eval.EvaluateTerminal(possibleGameState, m_Player);
-
 	}
         
 	if(p_Depth <= 0)
 	{
 	    return m_Eval.evaluateMove(p_Node, possibleGameState, m_Player);
-
 	}
 	
 	int utility = 0;
 	int prevUtility = 0;
 	
 	if(p_Node.gameState.getNextPlayer() == m_Player)
-	{
-	    utility = -100000;
 	    prevUtility = -100000;
-	}
 	else
-	{
-	    utility = 100000;
 	    prevUtility = 100000;
-	}
-	
+        
 	for(int i = 1; i < 7; ++i)
 	{	    
 	    if(!possibleGameState.moveIsPossible(i))
@@ -120,12 +112,12 @@ public class Minimax
 
 	    utility = depthLimitedSearch(tempNode, p_Depth - 1, p_StartTimer);
             tempNode.value = utility;
-	    
+            
 	    if(p_Node.gameState.getNextPlayer() == m_Player)
 		utility = Max(utility, prevUtility);
 	    else
 		utility = Min(utility, prevUtility);
-	    
+                
 	    prevUtility = utility;
 	}
         
