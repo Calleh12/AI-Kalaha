@@ -27,7 +27,7 @@ public class Evaluate
         m_ORootScore = m_RootGameState.getScore(m_Opponent);
     }
     
-    public int calculateValue(GameState p_GameState, int p_Move)
+    public int calculateTerminal(GameState p_GameState)
     {
         int value = 0;
         int winner = p_GameState.getWinner();
@@ -44,6 +44,13 @@ public class Evaluate
 	    value = -1000;
 	}
         
+        return value;
+    }
+    
+    public int calculateValue(GameState p_GameState, int p_Move)
+    {
+        int value = 0;
+        
         int score = p_GameState.getScore(m_Player);
         int oScore = p_GameState.getScore(m_Opponent);
         
@@ -51,7 +58,10 @@ public class Evaluate
         int oDiffScore = oScore - m_ORootScore;
         
         value += diffScore - oDiffScore;
-          
+        
+        if(m_RootScore + score >= 37)
+            value += 100;
+        
         int potentScore = 0;
         int oPotentScore = 0;
         
