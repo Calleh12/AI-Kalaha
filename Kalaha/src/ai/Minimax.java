@@ -43,7 +43,6 @@ public class Minimax
         public int state;
     }
     
-    Tree m_Tree;
     private GameState m_RootGameState;
     int m_Depth;
     int m_Player;
@@ -66,11 +65,7 @@ public class Minimax
 	m_Player = p_Player;
 	m_Text = p_Text;
 	
-	//m_Tree = new Tree(p_GameState);
-	
 	m_Eval = new Evaluate(m_RootGameState, p_Player);
-		
-	//currentPlayer = rootGameState.getNextPlayer() % 2 + 1;
     }
     
     public Result depthLimitedSearch(int p_Depth, long p_StartTimer, GameState p_GameState, int p_Move)
@@ -122,19 +117,10 @@ public class Minimax
 	    if(!possibleGameState.moveIsPossible(i))
 		continue;
 		
-	    //Node tempNode = new Node();
-
-	    //tempNode.parent = p_Node;
-	    //p_Move = i;
 	    GameState gameState = possibleGameState.clone();
-	    
-	    //p_Node.addChild(tempNode);
 
 	    res = depthLimitedSearch(p_Depth - 1, p_StartTimer, gameState, i);
-            utility = res.value;
-            //addText("Move: " + res.move);
-
-            //p_Value = utility;            
+            utility = res.value;       
             
 	    if(possibleGameState.getNextPlayer() == m_Player)
             {
@@ -144,10 +130,6 @@ public class Minimax
                     if(utility > beta)
                         return res;
                 }
-//		if(utility < prevUtility)
-//                {
-//                    utility = prevUtility;
-//                }
             }
 	    else
             {
@@ -157,10 +139,6 @@ public class Minimax
                     if(utility < alpha)
                         return res;
                 }
-//                if(utility > prevUtility)
-//                {
-//                    utility = prevUtility;
-//                }
             }
             
             if(utility > prevUtility)
@@ -169,10 +147,8 @@ public class Minimax
 	    prevUtility = utility;
 	}
         
-        //p_Node.value = utility;
-        //res.value = utility;
         res.move = bestMove;
-        //res.state = State.GOOD.getValue();
+        
 	return res;
     }
     

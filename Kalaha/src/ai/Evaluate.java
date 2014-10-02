@@ -23,22 +23,6 @@ public class Evaluate
         m_Opponent = p_Player % 2 + 1;
     }
     
-    public int EvaluateTerminal(GameState p_GameState)
-    {
-	if(p_GameState.getWinner() == m_Player)
-	{
-	    return 1000;
-	}
-	else if(p_GameState.getWinner() == 0)
-	{
-	    return 10;
-	}
-	else
-	{
-	    return -1000;
-	}
-    }
-    
     public int calculateValue(GameState p_GameState, int p_Move)
     {
         int value = 0;
@@ -72,23 +56,10 @@ public class Evaluate
         int newNextPlayer = tempState.getNextPlayer();
         
         if(currentNextPlayer == newNextPlayer && currentNextPlayer == m_Player)
-            value++;
+            value += 2;
         else
             value--;
         
-        for(int i = 0; i < 5; i++)
-        {
-            int seeds = p_GameState.getSeeds(i, m_Player);
-            value -= seeds * 0.25f;
-        }
-        int seeds = p_GameState.getSeeds(6, m_Player);
-        value += seeds * 1.5f;
-        
 	return value;
-    }
-    
-    public int evaluateMove()
-    {
-	return 0;
     }
 }
