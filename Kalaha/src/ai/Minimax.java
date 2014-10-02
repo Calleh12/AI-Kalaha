@@ -51,6 +51,9 @@ public class Minimax
     private JTextArea m_Text;
     double m_MaxTime;
     
+    int alpha = -10000;
+    int beta = 10000;
+    
     /**
      * Creates the tree and its first node, the root node.
      * 
@@ -65,7 +68,7 @@ public class Minimax
 	
 	//m_Tree = new Tree(p_GameState);
 	
-	m_Eval = new Evaluate(p_GameState);
+	m_Eval = new Evaluate(p_GameState, p_Player);
 		
 	//currentPlayer = rootGameState.getNextPlayer() % 2 + 1;
     }
@@ -73,11 +76,8 @@ public class Minimax
     public Result depthLimitedSearch(int p_Depth, long p_StartTimer, GameState p_GameState, int p_Move)
     {
         Result res = new Result();
-        
-        ArrayList<Integer> moves = new ArrayList<>();
-        
+                
         res.move = p_Move;
-        moves.add(p_Move);
         //res.value = p_Value;
         res.state = State.GOOD.getValue();
         
@@ -97,14 +97,14 @@ public class Minimax
         if(possibleGameState.gameEnded())
 	{
             res.state = State.TERMINAL.getValue();
-            res.value = m_Eval.EvaluateTerminal(possibleGameState, m_Player);
+            res.value = m_Eval.EvaluateTerminal(possibleGameState);
             return res;
 	}
         
 	if(p_Depth <= 0)
 	{
             res.state = State.CUTOFF.getValue();
-            res.value = m_Eval.calculateValue(possibleGameState, m_Player);
+            res.value = m_Eval.calculateValue( possibleGameState, p_Move);
             return res;
 	}
 	
@@ -190,9 +190,9 @@ public class Minimax
 	    //m_Tree = null;
 	    //m_Tree = new Tree(p_GameState);
             
-            //addText("m_Depth: " + m_Depth);
+            //addText();
 	    res = depthLimitedSearch(m_Depth, startTimer, p_GameState, 0);
-            //addText("Move: " + res.move + " Value: " + res.value );
+            addText("m_Depth: " + m_Depth + " Move: " + res.move + " Value: " + res.value );
             move = res.move;
                         
 	    m_Depth++;

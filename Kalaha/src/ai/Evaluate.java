@@ -14,70 +14,52 @@ import kalaha.*;
 public class Evaluate 
 {
     private GameState m_RootGameState;
+    private int m_Player, m_Opponent;
     
-    public Evaluate(GameState p_RootGameState)
+    public Evaluate(GameState p_RootGameState, int p_Player)
     {
 	m_RootGameState = p_RootGameState;
+        m_Player = p_Player;
+        m_Opponent = p_Player % 2 + 1;
     }
     
-    public int EvaluateTerminal(GameState p_GameState, int p_Player)
+    public int EvaluateTerminal(GameState p_GameState)
     {
-	if(p_GameState.getWinner() == p_Player)
+	if(p_GameState.getWinner() == m_Player)
 	{
-	    return 10;
+	    return 1000;
 	}
 	else if(p_GameState.getWinner() == 0)
 	{
-	    return 3;
+	    return 10;
 	}
 	else
 	{
-	    return -10;
+	    return -1000;
 	}
     }
     
-    public int calculateValue(GameState p_GameState, int p_Player)
+    public int calculateValue(GameState p_GameState, int p_Move)
     {
-        int nextPlayer = p_GameState.getNextPlayer();
-	int maxScore = 0;
-	if(nextPlayer == p_Player)
-	{
-	    for(int i = 0; i < 6; i++)
-	    {
-		if(p_GameState.getSeeds(i, p_Player) == i)
-		{
-		    maxScore = 2;
-		    break;
-		}
-	    }
-	    
-	    int prevScore = m_RootGameState.getScore(p_Player);
-	    int score = p_GameState.getScore(p_Player);
-	    
-	    if(score > prevScore)
-		if(maxScore < 1)
-		    maxScore = 1;
-	}
-	else
-	{
-	    for(int i = 0; i < 6; i++)
-	    {
-		if(p_GameState.getSeeds(i, nextPlayer) == i)
-		{
-		    maxScore = -2;
-		    break;
-		}
-	    }
-	    
-	    int prevScore = m_RootGameState.getScore(nextPlayer);
-	    int score = p_GameState.getScore(nextPlayer);
-	    
-	    if(score > prevScore)
-		if(maxScore < -1)
-		    maxScore = -1;
-	}
-	
-	return maxScore;
+        int rootScore = m_RootGameState.getScore(m_Player);
+        int score = p_GameState.getScore(m_Player);
+        int oRootScore = m_RootGameState.getScore(m_Opponent);
+        int oScore = p_GameState.getScore(m_Opponent);
+        
+        int diffScore = score - rootScore;
+        int oDiffScore = oScore - oRootScore;
+        
+        int value = diffScore - oDiffScore;
+        
+        GameState tempState = p_GameState.clone();
+        tempState.makeMove(p_Move);
+        
+        if(tempState.getNextPlayer() == m_Player)
+            value++;
+        else
+            value--;
+        
+	return value;
     }
     
     public int evaluateMove()

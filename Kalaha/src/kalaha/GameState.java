@@ -262,7 +262,7 @@ public class GameState
      * @param ambo The ambo
      * @return Opposite ambo index, or -1 if failed to find the opposite ambo.
      */
-    private int getOppositeAmbo(int ambo)
+    public int getOppositeAmbo(int ambo)
     {
         if (ambo == START_S) return END_N;
         if (ambo == START_S+1) return END_N-1;
