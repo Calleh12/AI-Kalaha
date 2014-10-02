@@ -41,6 +41,21 @@ public class Evaluate
     
     public int calculateValue(GameState p_GameState, int p_Move)
     {
+        int value = 0;
+        int winner = p_GameState.getWinner();
+        if(winner == m_Player)
+	{
+	    value = 1000;
+	}
+	else if(winner == 0)
+	{
+	    value = 10;
+	}
+        else if(winner == m_Opponent)
+	{
+	    value = -1000;
+	}
+        
         int rootScore = m_RootGameState.getScore(m_Player);
         int score = p_GameState.getScore(m_Player);
         int oRootScore = m_RootGameState.getScore(m_Opponent);
@@ -49,12 +64,14 @@ public class Evaluate
         int diffScore = score - rootScore;
         int oDiffScore = oScore - oRootScore;
         
-        int value = diffScore - oDiffScore;
+        value += diffScore - oDiffScore;
         
         GameState tempState = p_GameState.clone();
+        int currentNextPlayer = p_GameState.getNextPlayer();
         tempState.makeMove(p_Move);
+        int newNextPlayer = tempState.getNextPlayer();
         
-        if(tempState.getNextPlayer() == m_Player)
+        if(currentNextPlayer == newNextPlayer && currentNextPlayer == m_Player)
             value++;
         else
             value--;

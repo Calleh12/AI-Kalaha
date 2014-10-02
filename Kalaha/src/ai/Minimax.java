@@ -62,13 +62,13 @@ public class Minimax
      */
     public Minimax(GameState p_GameState, int p_Player, JTextArea p_Text)
     {
-	m_RootGameState = p_GameState;
+	m_RootGameState = p_GameState.clone();
 	m_Player = p_Player;
 	m_Text = p_Text;
 	
 	//m_Tree = new Tree(p_GameState);
 	
-	m_Eval = new Evaluate(p_GameState, p_Player);
+	m_Eval = new Evaluate(m_RootGameState, p_Player);
 		
 	//currentPlayer = rootGameState.getNextPlayer() % 2 + 1;
     }
@@ -97,7 +97,7 @@ public class Minimax
         if(possibleGameState.gameEnded())
 	{
             res.state = State.TERMINAL.getValue();
-            res.value = m_Eval.EvaluateTerminal(possibleGameState);
+            res.value = m_Eval.calculateValue(possibleGameState, p_Move);
             return res;
 	}
         
