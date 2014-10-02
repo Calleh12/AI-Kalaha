@@ -48,11 +48,7 @@ public class Minimax
     int m_Player;
     private Evaluate m_Eval;
     private JTextArea m_Text;
-    double m_MaxTime;
-    
-    int alpha = -10000;
-    int beta = 10000;
-    
+    double m_MaxTime;    
     /**
      * Creates the tree and its first node, the root node.
      * 
@@ -73,7 +69,6 @@ public class Minimax
         Result res = new Result();
                 
         res.move = p_Move;
-        //res.value = p_Value;
         res.state = State.GOOD.getValue();
         
 	GameState possibleGameState = p_GameState;
@@ -106,6 +101,9 @@ public class Minimax
 	int utility = 0;
 	int prevUtility = 0;
         int bestMove = 0;
+            
+        int alpha = -10000;
+        int beta = 10000;
 	
 	if(possibleGameState.getNextPlayer() == m_Player)
 	    prevUtility = -100000;

@@ -60,6 +60,22 @@ public class Evaluate
         else
             value--;
         
+        int potentScore = 1;
+        int oPotentScore = 1;
+        for(int i = 1; i < 7; i++)
+        {
+            potentScore += p_GameState.getSeeds(i, m_Player);
+            oPotentScore += p_GameState.getSeeds(i, m_Opponent);
+        }
+        
+        int potentDiff = 0;
+        if(potentScore >= oPotentScore)
+            potentDiff = potentScore / oPotentScore;
+        else
+            potentDiff = oPotentScore / potentScore * -1;
+        
+        value += potentDiff;
+        
 	return value;
     }
 }
