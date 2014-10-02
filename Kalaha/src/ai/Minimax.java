@@ -7,6 +7,7 @@ package ai;
 
 import kalaha.GameState;
 import javax.swing.JTextArea;
+import java.util.ArrayList;
 
 /**
  *
@@ -64,7 +65,7 @@ public class Minimax
 	
 	//m_Tree = new Tree(p_GameState);
 	
-	m_Eval = new Evaluate();
+	m_Eval = new Evaluate(p_GameState);
 		
 	//currentPlayer = rootGameState.getNextPlayer() % 2 + 1;
     }
@@ -72,7 +73,11 @@ public class Minimax
     public Result depthLimitedSearch(int p_Depth, long p_StartTimer, GameState p_GameState, int p_Move)
     {
         Result res = new Result();
+        
+        ArrayList<Integer> moves = new ArrayList<>();
+        
         res.move = p_Move;
+        moves.add(p_Move);
         //res.value = p_Value;
         res.state = State.GOOD.getValue();
         
@@ -99,13 +104,13 @@ public class Minimax
 	if(p_Depth <= 0)
 	{
             res.state = State.CUTOFF.getValue();
-            res.value = m_Eval.evaluateMove(m_RootGameState, possibleGameState, m_Player);
+            res.value = m_Eval.calculateValue(possibleGameState, m_Player);
             return res;
 	}
 	
 	int utility = 0;
 	int prevUtility = 0;
-        int prevMove = 0;
+        int bestMove = 0;
 	
 	if(possibleGameState.getNextPlayer() == m_Player)
 	    prevUtility = -100000;
@@ -120,7 +125,7 @@ public class Minimax
 	    //Node tempNode = new Node();
 
 	    //tempNode.parent = p_Node;
-	    p_Move = i;
+	    //p_Move = i;
 	    GameState gameState = possibleGameState.clone();
 	    
 	    //p_Node.addChild(tempNode);
@@ -145,13 +150,16 @@ public class Minimax
                     utility = prevUtility;
                 }
             }
-                
+            
+            if(utility > prevUtility)
+                bestMove = i;
+            
 	    prevUtility = utility;
 	}
         
         //p_Node.value = utility;
-        res.value = utility;
-        //res.move = p_Move;
+        //res.value = utility;
+        res.move = bestMove;
         //res.state = State.GOOD.getValue();
 	return res;
     }
@@ -195,23 +203,7 @@ public class Minimax
 	    lastTime = time;
 	}
         
-        addText("Best move: " + move);
-
         return move;
-    }
-    
-    private int Max(int p_Util, int p_PrevUtil)
-    {
-	if(p_Util < p_PrevUtil)
-	    p_Util = p_PrevUtil;
-	return p_Util;
-    }
-    
-    private int Min(int p_Util, int p_PrevUtil)
-    {
-	if(p_Util > p_PrevUtil)
-	    p_Util = p_PrevUtil;
-	return p_Util;
     }
     
     /**

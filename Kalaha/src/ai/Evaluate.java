@@ -13,31 +13,32 @@ import kalaha.*;
  */
 public class Evaluate 
 {
+    private GameState m_RootGameState;
     
-    public Evaluate()
+    public Evaluate(GameState p_RootGameState)
     {
-	
+	m_RootGameState = p_RootGameState;
     }
     
     public int EvaluateTerminal(GameState p_GameState, int p_Player)
     {
 	if(p_GameState.getWinner() == p_Player)
 	{
-	    return 50;
+	    return 10;
 	}
 	else if(p_GameState.getWinner() == 0)
 	{
-	    return 10;
+	    return 3;
 	}
 	else
 	{
-	    return -30;
+	    return -10;
 	}
     }
     
-    public int evaluateMove(GameState p_RootGameState, GameState p_GameState, int p_Player)
+    public int calculateValue(GameState p_GameState, int p_Player)
     {
-	int nextPlayer = p_GameState.getNextPlayer();
+        int nextPlayer = p_GameState.getNextPlayer();
 	int maxScore = 0;
 	if(nextPlayer == p_Player)
 	{
@@ -50,7 +51,7 @@ public class Evaluate
 		}
 	    }
 	    
-	    int prevScore = p_RootGameState.getScore(p_Player);
+	    int prevScore = m_RootGameState.getScore(p_Player);
 	    int score = p_GameState.getScore(p_Player);
 	    
 	    if(score > prevScore)
@@ -68,7 +69,7 @@ public class Evaluate
 		}
 	    }
 	    
-	    int prevScore = p_RootGameState.getScore(nextPlayer);
+	    int prevScore = m_RootGameState.getScore(nextPlayer);
 	    int score = p_GameState.getScore(nextPlayer);
 	    
 	    if(score > prevScore)
@@ -77,5 +78,10 @@ public class Evaluate
 	}
 	
 	return maxScore;
+    }
+    
+    public int evaluateMove()
+    {
+	return 0;
     }
 }
