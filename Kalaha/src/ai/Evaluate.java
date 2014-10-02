@@ -35,7 +35,7 @@ public class Evaluate
 	}
     }
     
-    public int evaluateMove(Node p_Node, GameState p_GameState, int p_Player)
+    public int evaluateMove(GameState p_RootGameState, GameState p_GameState, int p_Player)
     {
 	int nextPlayer = p_GameState.getNextPlayer();
 	int maxScore = 0;
@@ -50,7 +50,7 @@ public class Evaluate
 		}
 	    }
 	    
-	    int prevScore = p_Node.parent.gameState.getScore(p_Player);
+	    int prevScore = p_RootGameState.getScore(p_Player);
 	    int score = p_GameState.getScore(p_Player);
 	    
 	    if(score > prevScore)
@@ -68,7 +68,7 @@ public class Evaluate
 		}
 	    }
 	    
-	    int prevScore = p_Node.parent.gameState.getScore(nextPlayer);
+	    int prevScore = p_RootGameState.getScore(nextPlayer);
 	    int score = p_GameState.getScore(nextPlayer);
 	    
 	    if(score > prevScore)

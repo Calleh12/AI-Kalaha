@@ -215,23 +215,23 @@ public class AIClient implements Runnable
         int myMove = getRandom();
 	
 	Minimax minime = new Minimax(currentBoard, player, text);
+        int bestMove = -1;
 	
 	//minime.depthLimitedSearch(minime.m_Tree.getRoot(), 8, 0);
-	minime.iterativeDeepening(5, 2, currentBoard);
+	bestMove = minime.iterativeDeepening(5, 3, currentBoard);
 	
-	Node root = minime.m_Tree.getRoot();
+	//Node root = minime.m_Tree.getRoot();
 	
-        int bestMove = -1;
-	int bestValue = root.value;
+	//int bestValue = root.value;
         
-        for(int i = 0; i < root.children.size(); i++)
-        {
-            if(bestValue == root.children.get(i).value)
-            {
-                bestMove = root.children.get(i).move;
-                break;
-            }
-        }
+//        for(int i = 0; i < root.children.size(); i++)
+//        {
+//            if(bestValue == root.children.get(i).value)
+//            {
+//                bestMove = root.children.get(i).move;
+//                break;
+//            }
+//        }
         
        if(bestMove <= 0)
             bestMove = myMove;
