@@ -125,8 +125,6 @@ public class Minimax
                 if(utility > alpha)
                 {
                     alpha = utility;
-                    if(utility > beta)
-                        return res;
                 }
             }
 	    else
@@ -134,15 +132,15 @@ public class Minimax
                 if(utility < beta)
                 {
                     beta = utility;
-                    if(utility < alpha)
-                        return res;
                 }
             }
-            
             if(utility > prevUtility)
                 bestMove = i;
             
 	    prevUtility = utility;
+            
+            if(beta <= alpha)
+                return res;
 	}
         
         res.move = bestMove;
@@ -176,10 +174,14 @@ public class Minimax
                 addText("TimeOut");
                 break;
             }
-            
             addText("m_Depth: " + m_Depth + " Move: " + res.move + " Value: " + res.value );
             move = res.move;
-                        
+            
+            if(res.state == State.TERMINAL.getValue())
+            {
+                break;
+            }
+            
 	    m_Depth++;
 	    
 	    long tot = System.currentTimeMillis() - startTimer;

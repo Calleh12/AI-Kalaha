@@ -15,12 +15,16 @@ public class Evaluate
 {
     private GameState m_RootGameState;
     private int m_Player, m_Opponent;
+    private int m_RootScore, m_ORootScore;
     
     public Evaluate(GameState p_RootGameState, int p_Player)
     {
 	m_RootGameState = p_RootGameState;
         m_Player = p_Player;
         m_Opponent = p_Player % 2 + 1;
+        
+        m_RootScore = m_RootGameState.getScore(m_Player);
+        m_ORootScore = m_RootGameState.getScore(m_Opponent);
     }
     
     public int calculateValue(GameState p_GameState, int p_Move)
@@ -40,41 +44,34 @@ public class Evaluate
 	    value = -1000;
 	}
         
-        int rootScore = m_RootGameState.getScore(m_Player);
         int score = p_GameState.getScore(m_Player);
-        int oRootScore = m_RootGameState.getScore(m_Opponent);
         int oScore = p_GameState.getScore(m_Opponent);
         
-        int diffScore = score - rootScore;
-        int oDiffScore = oScore - oRootScore;
+        int diffScore = score - m_RootScore;
+        int oDiffScore = oScore - m_ORootScore;
         
         value += diffScore - oDiffScore;
+          
+        int potentScore = 0;
+        int oPotentScore = 0;
         
-        GameState tempState = p_GameState.clone();
-        int currentNextPlayer = p_GameState.getNextPlayer();
-        tempState.makeMove(p_Move);
-        int newNextPlayer = tempState.getNextPlayer();
-        
-        if(currentNextPlayer == newNextPlayer && currentNextPlayer == m_Player)
-            value += 2;
-        else
-            value--;
-        
-        int potentScore = 1;
-        int oPotentScore = 1;
+        int seeds = 0;
+        int oSeeds = 0;
         for(int i = 1; i < 7; i++)
         {
-            potentScore += p_GameState.getSeeds(i, m_Player);
-            oPotentScore += p_GameState.getSeeds(i, m_Opponent);
+            seeds = p_GameState.getSeeds(i, m_Player);
+            oSeeds = p_GameState.getSeeds(i, m_Opponent);
+            if(oSeeds == 0)
+                value -= seeds;
+            
+            if(seeds == 0)
+                value += oSeeds;
+            
+            potentScore += seeds;
+            oPotentScore += oSeeds;
         }
         
-        int potentDiff = 0;
-        if(potentScore >= oPotentScore)
-            potentDiff = potentScore / oPotentScore;
-        else
-            potentDiff = oPotentScore / potentScore * -1;
-        
-        value += potentDiff;
+        value += (potentScore * 1.25) - oPotentScore;
         
 	return value;
     }
