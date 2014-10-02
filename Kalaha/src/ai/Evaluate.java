@@ -76,6 +76,14 @@ public class Evaluate
         else
             value--;
         
+        for(int i = 0; i < 5; i++)
+        {
+            int seeds = p_GameState.getSeeds(i, m_Player);
+            value -= seeds * 0.25f;
+        }
+        int seeds = p_GameState.getSeeds(6, m_Player);
+        value += seeds * 1.5f;
+        
 	return value;
     }
     

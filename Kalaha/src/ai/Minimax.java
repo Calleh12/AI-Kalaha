@@ -138,17 +138,29 @@ public class Minimax
             
 	    if(possibleGameState.getNextPlayer() == m_Player)
             {
-		if(utility < prevUtility)
+                if(utility > alpha)
                 {
-                    utility = prevUtility;
+                    alpha = utility;
+                    if(utility > beta)
+                        return res;
                 }
+//		if(utility < prevUtility)
+//                {
+//                    utility = prevUtility;
+//                }
             }
 	    else
             {
-                if(utility > prevUtility)
+                if(utility < beta)
                 {
-                    utility = prevUtility;
+                    beta = utility;
+                    if(utility < alpha)
+                        return res;
                 }
+//                if(utility > prevUtility)
+//                {
+//                    utility = prevUtility;
+//                }
             }
             
             if(utility > prevUtility)
@@ -182,16 +194,15 @@ public class Minimax
 	{
             if(p_MaxTime <= (time + lastTime))
                 break;
+                        
+	    res = depthLimitedSearch(m_Depth, startTimer, p_GameState, 0);
             
             if(res.state == State.TIMEOUT.getValue())
+            {
+                addText("TimeOut");
                 break;
+            }
             
-            
-	    //m_Tree = null;
-	    //m_Tree = new Tree(p_GameState);
-            
-            //addText();
-	    res = depthLimitedSearch(m_Depth, startTimer, p_GameState, 0);
             addText("m_Depth: " + m_Depth + " Move: " + res.move + " Value: " + res.value );
             move = res.move;
                         
