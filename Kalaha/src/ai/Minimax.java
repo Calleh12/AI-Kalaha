@@ -15,33 +15,7 @@ import java.util.ArrayList;
  */
 public class Minimax 
 {
-    public enum State
-    {
-        GOOD(0),
-	CUTOFF(1),
-	TERMINAL(2),
-	FAILUIRE(3),
-        TIMEOUT(4);
-	
-	private int State;
-	
-	State(int p_State)
-	{
-	    State = p_State;
-	}
-	
-	public int getValue()
-	{
-	    return State;   
-	}
-    }
-    
-    class Result
-    {
-	public int move;
-	public int value;
-        public int state;
-    }
+
     
     private GameState m_RootGameState;
     int m_Depth;
@@ -50,7 +24,6 @@ public class Minimax
     private JTextArea m_Text;
     double m_MaxTime;
     long m_StartTime;
-    Result m_Res;
     
     /**
      * Creates the tree and its first node, the root node.
@@ -65,15 +38,16 @@ public class Minimax
 	m_Text = p_Text;
         
         m_StartTime = 0;
-	m_Res = new Result();
         
 	m_Eval = new Evaluate(m_RootGameState, p_Player);
     }
     
-    public Result depthLimitedSearch(int p_Depth, GameState p_GameState, int p_Move)
+    public Result depthLimitedSearch(int p_Depth, int p_DepthMeter, GameState p_GameState, int p_Move, int p_Alpha, int p_Beta)
     {
-        m_Res = new Result();
-        GameState possibleGameState = p_GameState;
+        //ArrayList<Result> ress = new ArrayList<>();
+        Result res = new Result();
+        //res.move = p_Move;
+        GameState possibleGameState = p_GameState.clone();
 	if(p_Move > 0)
 	    possibleGameState.makeMove(p_Move);
         
@@ -82,70 +56,106 @@ public class Minimax
         
         if(m_MaxTime < time)
         {
-            m_Res.state = State.TIMEOUT.getValue();
-            return m_Res;
+            res.state = State.TIMEOUT.getValue();
+            return res;
         }
         
         if(possibleGameState.gameEnded())
 	{
-            m_Res.state = State.TERMINAL.getValue();
-            m_Res.value = m_Eval.calculateTerminal(possibleGameState);
-            return m_Res;
+            res.state = State.TERMINAL.getValue();
+            res.value = m_Eval.calculateTerminal(possibleGameState);
+            //res.move = p_Move;
+            return res;
 	}
         
 	if(p_Depth <= 0)
 	{
-            m_Res.state = State.CUTOFF.getValue();
-            m_Res.value = m_Eval.calculateValue( possibleGameState, p_Move);
-            return m_Res;
+            res.state = State.CUTOFF.getValue();
+            res.value = m_Eval.calculateValue( possibleGameState);
+            //res.move = p_Move;
+            return res;
 	}
+        
+        int nextPlayer = possibleGameState.getNextPlayer();
 	
 	int utility = 0;
-	int prevUtility = -100000;
+	int bestUtility = -100000;
         int bestMove = 0;
             
-        int alpha = -10000;
-        int beta = 10000;
+        int alpha = p_Alpha;
+        int beta = p_Beta;
+        
+        if(nextPlayer == m_Player)
+        {
+            utility = -100000;
+        }
+        else
+        {
+            utility = 100000;
+        }
         
 	for(int i = 1; i < 7; ++i)
 	{	    
 	    if(!possibleGameState.moveIsPossible(i))
 		continue;
-		
-	    GameState gameState = possibleGameState.clone();
-
-	    m_Res = depthLimitedSearch(p_Depth - 1, gameState, i);
-            utility = m_Res.value;       
             
-	    if(possibleGameState.getNextPlayer() == m_Player)
+	    res = depthLimitedSearch(p_Depth - 1, p_DepthMeter + 1, possibleGameState, i, alpha, beta);
+            res.move = i;
+	    if(nextPlayer == m_Player)
             {
-                if(utility > alpha)
-                {
-                    alpha = utility;
-                }
+               if(res.value > utility)
+               {
+                   utility = res.value;
+               }
+               
+               if(utility > beta)
+               {
+                   //addText("Pruned min; " + utility);
+                  // break;
+               }
+               
+               if(utility > alpha)
+                   alpha = utility;
             }
 	    else
             {
-                if(utility < beta)
+                if(res.value < utility)
                 {
-                    beta = utility;
+                    utility = res.value;
                 }
+                
+                if(utility < alpha)
+                {
+                    //addText("Pruned max; " + utility);
+                    //break;
+                }
+                if(utility < beta)
+                    beta = utility;
             }
-            if(utility > prevUtility)
+            if(utility > bestUtility)
             {
                 bestMove = i;
-                prevUtility = utility;
+                bestUtility = utility;
             }
+            //ress.add(res);
             
             if(beta <= alpha)
             {
-                return m_Res;
+               break;
             }   
 	}
-        
-        m_Res.move = bestMove;
-        
-	return m_Res;
+//            if(p_Depth >= 15)
+//            {
+//                if(ress.size() >= 6)
+//                {
+//                    int hej = 0;
+//                }
+//            }
+//        res.value = utility;
+        //res.move = bestMove;
+        //res.value = bestUtility;
+        res.move = bestMove;
+	return res;
     }
     
     public int iterativeDeepening(double p_MaxTime, int p_StartDepth, GameState p_GameState)
@@ -164,17 +174,21 @@ public class Minimax
 	
 	while(p_MaxTime >= time)
 	{
+            long timeStamp = System.currentTimeMillis();
+            
             if(p_MaxTime <= (time + lastTime))
                 break;
-                        
-	    res = depthLimitedSearch(m_Depth, m_RootGameState, 0);
+	    res = depthLimitedSearch(m_Depth, 1, m_RootGameState, 0, -100000, 100000);
             
             if(res.state == State.TIMEOUT.getValue())
             {
                 addText("TimeOut");
                 break;
             }
-            addText("m_Depth: " + m_Depth + " Move: " + res.move + " Value: " + res.value );
+            long totStamp = System.currentTimeMillis() - timeStamp;
+	    double stamp = (double)totStamp / (double)1000;
+            
+            addText("m_Depth: " + m_Depth + " Move: " + res.move + " Value: " + res.value + " it took: " + stamp);
             move = res.move;
             
             if(res.state == State.TERMINAL.getValue())

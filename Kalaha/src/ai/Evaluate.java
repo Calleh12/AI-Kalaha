@@ -7,6 +7,41 @@ package ai;
 
 import kalaha.*;
 
+    enum State
+    {
+        GOOD(0),
+	CUTOFF(1),
+	TERMINAL(2),
+	FAILUIRE(3),
+        TIMEOUT(4);
+	
+	private int State;
+	
+	State(int p_State)
+	{
+	    State = p_State;
+	}
+	
+	public int getValue()
+	{
+	    return State;   
+	}
+    }
+    
+    class Result
+    {
+	public int move;
+	public int value;
+        public int state;
+        
+//        Result(int p_Value)
+//        {
+//            move = 0;
+//            value = p_Value;
+//            state = State.GOOD.getValue();
+//        }
+    }
+
 /**
  *
  * @author rokc09
@@ -53,22 +88,22 @@ public class Evaluate
         return value;
     }
     
-    public int calculateValue(GameState p_GameState, int p_Move)
+    public int calculateValue(GameState p_GameState)
     {
         int value = 0;
-        
+               
         int score = p_GameState.getScore(m_Player);
         int oScore = p_GameState.getScore(m_Opponent);
         
         int diffScore = score - m_RootScore;
         int oDiffScore = oScore - m_ORootScore;
         
-        value = diffScore - oDiffScore;
+        value += diffScore - oDiffScore;
         
         if(m_Win == false && m_RootScore + score >= 37)
         {
-            value = 100;
-            m_Win = true;
+            value += 100;
+            //m_Win = true;
         }
         
         int potentScore = 0;
@@ -82,7 +117,7 @@ public class Evaluate
             seeds = p_GameState.getSeeds(i, m_Player);
             oSeeds = p_GameState.getSeeds(i, m_Opponent);
             if(oSeeds == 0)
-                potentValue -= seeds;
+                potentValue -= seeds * 1.25;
             
             if(seeds == 0)
                 potentValue += oSeeds;
@@ -90,11 +125,13 @@ public class Evaluate
             potentScore += seeds;
             oPotentScore += oSeeds;
         }
-        m_PrevValue = value;
-        value = (int)(potentScore * 1.25) - oPotentScore + potentValue;
+        //m_PrevValue = value;
+        value += potentScore * 1.25 - oPotentScore + potentValue;
         
-        if(value > m_PrevValue)
-            value = m_PrevValue;
+        //if(value > m_PrevValue)
+            //value = m_PrevValue;
+        
+        value += calculateTerminal(p_GameState);
         
 	return value;
     }
