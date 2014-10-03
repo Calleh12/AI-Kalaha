@@ -17,6 +17,9 @@ public class Evaluate
     private int m_Player, m_Opponent;
     private int m_RootScore, m_ORootScore;
     
+    private int m_PrevValue;
+    private boolean m_Win;
+    
     public Evaluate(GameState p_RootGameState, int p_Player)
     {
 	m_RootGameState = p_RootGameState;
@@ -25,6 +28,9 @@ public class Evaluate
         
         m_RootScore = m_RootGameState.getScore(m_Player);
         m_ORootScore = m_RootGameState.getScore(m_Opponent);
+        
+        m_PrevValue = -100000;
+        m_Win = false;
     }
     
     public int calculateTerminal(GameState p_GameState)
@@ -57,13 +63,17 @@ public class Evaluate
         int diffScore = score - m_RootScore;
         int oDiffScore = oScore - m_ORootScore;
         
-        value += diffScore - oDiffScore;
+        value = diffScore - oDiffScore;
         
-        if(m_RootScore + score >= 37)
-            value += 100;
+        if(m_Win == false && m_RootScore + score >= 37)
+        {
+            value = 100;
+            m_Win = true;
+        }
         
         int potentScore = 0;
         int oPotentScore = 0;
+        int potentValue = 0;
         
         int seeds = 0;
         int oSeeds = 0;
@@ -72,16 +82,19 @@ public class Evaluate
             seeds = p_GameState.getSeeds(i, m_Player);
             oSeeds = p_GameState.getSeeds(i, m_Opponent);
             if(oSeeds == 0)
-                value -= seeds;
+                potentValue -= seeds;
             
             if(seeds == 0)
-                value += oSeeds;
+                potentValue += oSeeds;
             
             potentScore += seeds;
             oPotentScore += oSeeds;
         }
+        m_PrevValue = value;
+        value = (int)(potentScore * 1.25) - oPotentScore + potentValue;
         
-        value += (potentScore * 1.25) - oPotentScore;
+        if(value > m_PrevValue)
+            value = m_PrevValue;
         
 	return value;
     }

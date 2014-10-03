@@ -101,16 +101,11 @@ public class Minimax
 	}
 	
 	int utility = 0;
-//	int prevUtility = 0;
+	int prevUtility = -100000;
         int bestMove = 0;
             
         int alpha = -10000;
         int beta = 10000;
-	
-//	if(possibleGameState.getNextPlayer() == m_Player)
-//	    prevUtility = -100000;
-//	else
-//	    prevUtility = 100000;
         
 	for(int i = 1; i < 7; ++i)
 	{	    
@@ -136,13 +131,16 @@ public class Minimax
                     beta = utility;
                 }
             }
-//            if(utility > prevUtility)
-//                bestMove = i;
-//            
-//	    prevUtility = utility;
+            if(utility > prevUtility)
+            {
+                bestMove = i;
+                prevUtility = utility;
+            }
             
             if(beta <= alpha)
+            {
                 return m_Res;
+            }   
 	}
         
         m_Res.move = bestMove;
@@ -176,7 +174,7 @@ public class Minimax
                 addText("TimeOut");
                 break;
             }
-            //addText("m_Depth: " + m_Depth + " Move: " + res.move + " Value: " + res.value );
+            addText("m_Depth: " + m_Depth + " Move: " + res.move + " Value: " + res.value );
             move = res.move;
             
             if(res.state == State.TERMINAL.getValue())
@@ -192,7 +190,7 @@ public class Minimax
 	    lastTime = time;
 	}
         
-        addText("Depth " + m_Depth + " reached.");
+        //addText("Depth " + m_Depth + " reached.");
         
         return move;
     }
