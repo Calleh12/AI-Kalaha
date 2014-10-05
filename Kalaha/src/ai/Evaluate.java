@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package ai;
+import java.util.ArrayList;
 
 import kalaha.*;
 
@@ -32,6 +33,7 @@ import kalaha.*;
     {
 	public int move;
 	public int value;
+        public int bestValue;
         public int state;
         
 //        Result(int p_Value)
@@ -78,7 +80,7 @@ public class Evaluate
 	}
 	else if(winner == 0)
 	{
-	    value = 10;
+	    value = 100;
 	}
         else if(winner == m_Opponent)
 	{
@@ -100,7 +102,7 @@ public class Evaluate
         
         value += diffScore - oDiffScore;
         
-        if(m_Win == false && m_RootScore + score >= 37)
+        if( score >= 37)
         {
             value += 100;
             //m_Win = true;
@@ -110,28 +112,57 @@ public class Evaluate
         int oPotentScore = 0;
         int potentValue = 0;
         
-        int seeds = 0;
-        int oSeeds = 0;
-        for(int i = 1; i < 7; i++)
+        int seed = 1;
+        int oSeed = 1;
+        int tempValue = 0;
+        
+        boolean steal = false;
+        boolean theft = false;
+        ArrayList<Integer> seeds = new ArrayList<Integer>();
+        ArrayList<Integer> oSeeds = new ArrayList<Integer>();
+        int j = 6;
+        for(int i = 0; i < 7; i++)
         {
-            seeds = p_GameState.getSeeds(i, m_Player);
-            oSeeds = p_GameState.getSeeds(i, m_Opponent);
-            if(oSeeds == 0)
-                potentValue -= seeds * 1.25;
+            seed = p_GameState.getSeeds(i, m_Player);
+            oSeed = p_GameState.getSeeds(i, m_Opponent);
             
-            if(seeds == 0)
-                potentValue += oSeeds;
+            seeds.add(seed);
+            oSeeds.add(oSeed);
             
-            potentScore += seeds;
-            oPotentScore += oSeeds;
+            if(oSeed == 0)
+            {
+                tempValue = seed;
+                theft = true;
+                potentValue -= seed;
+            }
+            
+            if(seed == 0)
+            {
+                tempValue = oSeed;
+                steal = true;
+                potentValue += oSeed;
+            }
+            
+            if(12 + j == seed)
+            {
+                value += oSeed + 2;
+            }
+            
+            if(12 + j == oSeed)
+            {
+                value -= seed + 2;
+            }
+            
+            potentScore += seed;
+            oPotentScore += oSeed;
+            j--;
         }
+                
         //m_PrevValue = value;
-        value += potentScore * 1.25 - oPotentScore + potentValue;
+        value += potentScore - oPotentScore + potentValue;
         
         //if(value > m_PrevValue)
             //value = m_PrevValue;
-        
-        value += calculateTerminal(p_GameState);
         
 	return value;
     }

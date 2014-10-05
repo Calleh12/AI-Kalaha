@@ -64,7 +64,6 @@ public class Minimax
 	{
             res.state = State.TERMINAL.getValue();
             res.value = m_Eval.calculateTerminal(possibleGameState);
-            //res.move = p_Move;
             return res;
 	}
         
@@ -72,7 +71,6 @@ public class Minimax
 	{
             res.state = State.CUTOFF.getValue();
             res.value = m_Eval.calculateValue( possibleGameState);
-            //res.move = p_Move;
             return res;
 	}
         
@@ -110,8 +108,7 @@ public class Minimax
                
                if(utility > beta)
                {
-                   //addText("Pruned min; " + utility);
-                  // break;
+                   break;
                }
                
                if(utility > alpha)
@@ -126,8 +123,7 @@ public class Minimax
                 
                 if(utility < alpha)
                 {
-                    //addText("Pruned max; " + utility);
-                    //break;
+                    break;
                 }
                 if(utility < beta)
                     beta = utility;
@@ -141,19 +137,10 @@ public class Minimax
             
             if(beta <= alpha)
             {
-               break;
+             //  break;
             }   
 	}
-//            if(p_Depth >= 15)
-//            {
-//                if(ress.size() >= 6)
-//                {
-//                    int hej = 0;
-//                }
-//            }
-//        res.value = utility;
-        //res.move = bestMove;
-        //res.value = bestUtility;
+        res.bestValue = bestUtility;
         res.move = bestMove;
 	return res;
     }
@@ -188,7 +175,7 @@ public class Minimax
             long totStamp = System.currentTimeMillis() - timeStamp;
 	    double stamp = (double)totStamp / (double)1000;
             
-            addText("m_Depth: " + m_Depth + " Move: " + res.move + " Value: " + res.value + " it took: " + stamp);
+            addText("m_Depth: " + m_Depth + " Move: " + res.move + " Value: " + res.bestValue + " it took: " + stamp);
             move = res.move;
             
             if(res.state == State.TERMINAL.getValue())
