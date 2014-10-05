@@ -147,11 +147,15 @@ public class Evaluate
             {
                 value += oSeed + 2;
             }
+//            if(13 - j == seed)
+//                value += oSeed + 1;
             
             if(12 + j == oSeed)
             {
                 value -= seed + 2;
             }
+//            if(13 - j == oSeed)
+//                value -= seed + 1;
             
             potentScore += seed;
             oPotentScore += oSeed;
