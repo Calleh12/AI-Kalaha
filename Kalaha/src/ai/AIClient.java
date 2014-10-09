@@ -212,15 +212,17 @@ public class AIClient implements Runnable
      */
     public int getMove(GameState currentBoard)
     {
-        int myMove = getRandom();
-	
+	//Creating the minimax search tree
 	Minimax minime = new Minimax(currentBoard, player, text);
         int bestMove = -1;
 	
+	//Starts the search
 	bestMove = minime.iterativeDeepening(5, 3, currentBoard);
         
+	//If somehow the AI returns an invalid move use the random move to 
+	//atleast have the AI play.
        if(bestMove <= 0)
-            bestMove = myMove;
+            bestMove = getRandom();
 	
 	/*todo: When tree is built and utility values propogated 
 		return here and loop through the rootnode's children
