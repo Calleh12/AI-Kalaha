@@ -74,17 +74,20 @@ public class Evaluate
     {
         int value = 0;
         int winner = p_GameState.getWinner();
+        int score = p_GameState.getScore(m_Player);
+        int oScore = p_GameState.getScore(m_Opponent);
+        
         if(winner == m_Player)
 	{
-	    value = 1000;
+	    value = score*3;
 	}
 	else if(winner == 0)
 	{
-	    value = 100;
+	    value = -oScore;
 	}
         else if(winner == m_Opponent)
 	{
-	    value = -1000;
+	    value = -oScore*3;
 	}
         
         return value;
@@ -100,21 +103,15 @@ public class Evaluate
         int diffScore = score - m_RootScore;
         int oDiffScore = oScore - m_ORootScore;
         
-        value += diffScore - oDiffScore;
+        value = diffScore - oDiffScore;
         
         if( score >= 37)
         {
-            value += 37;
+            value += score;
             //m_Win = true;
         }
-        
-        int potentScore = 0;
-        int oPotentScore = 0;
-        int potentValue = 0;
-        
         int seed = 1;
         int oSeed = 1;
-        int tempValue = 0;
         
         ArrayList<Integer> seeds = new ArrayList<Integer>();
         ArrayList<Integer> oSeeds = new ArrayList<Integer>();
@@ -126,59 +123,95 @@ public class Evaluate
             seeds.add(seed);
             oSeeds.add(oSeed);
             
-            if(oSeed == 0)
-            {
-                potentValue -= seed;
+//            if(oSeed == 0)
+//            {
+//                potentValue -= seed;
+//            }
+//            
+//            if(seed == 0)
+//            {
+//                potentValue += oSeed;
+//            }
+            
+            value += seed;
+            value -= oSeed;
+        }
+        
+        for(int i = 0; i < 5; i++)
+        {
+            int highest = 0;
+            int lowest = 0;
+            for(int j = i+1; j <= 5; j++)
+	    {
+                if(seeds.get(i) == j)
+                {
+                    if(seeds.get(j) == 0)
+                    {
+                        int temp = oSeeds.get(j);
+			if(temp > highest)
+			    highest = temp;
+                    }
+                }
+                
+                if(oSeeds.get(i) == j)
+                {
+                    if(oSeeds.get(j) == 0)
+                    {
+                        int temp = seeds.get(j);
+			if(temp > highest)
+			    highest = temp;
+                    }
+                }
             }
             
-            if(seed == 0)
-            {
-                potentValue += oSeed;
-            }
-            
-            potentScore += seed;
-            oPotentScore += oSeed;
+            value += highest - lowest;
         }
 	
-	for(int i = 6; i > 0; i--)
+	for(int i = 5; i >= 0; i--)
 	{
-	    seed = p_GameState.getSeeds(i, m_Player);
-            oSeed = p_GameState.getSeeds(i, m_Opponent);
-	    
-	    
 	    int highest = 0;
-	    for(int j = 0; j < i; j++)
+	    int lowest = 0;
+	    for(int j = i; j >= 0; j--)
 	    {
-		if(seeds.get(i-1) == 8 + j)
+		if(seeds.get(i) == 8 + j)
 		{
-		    if(seeds.get(j) == 0)
+		    if(seeds.get(j) == 13)
 		    {
-			int temp = oSeeds.get(j)*2;
+			int temp = oSeeds.get(j);
 			if(temp > highest)
 			    highest = temp;
 		    }
 		}
-	    }
-	    
-	    int lowest = 0;
-	    for(int j = 0; j < i; j++)
-	    {
-		if(oSeeds.get(i-1) == 8 + j)
+                
+                if(oSeeds.get(i) == 8 + j)
 		{
-		    if(oSeeds.get(j) == 0)
+		    if(oSeeds.get(j) == 0 || oSeeds.get(j) == 0)
 		    {
-			int temp = seeds.get(j)*2;
+			int temp = seeds.get(j);
 			if(temp > lowest)
 			    lowest = temp;
 		    }
 		}
 	    }
 	    
+//	    for(int j = i; j >= 0; j--)
+//	    {
+//		if(oSeeds.get(i) == 8 + j)
+//		{
+//		    if(oSeeds.get(j) == 0)
+//		    {
+//			int temp = seeds.get(j)*2;
+//			if(temp > lowest)
+//			    lowest = temp;
+//		    }
+//		}
+//	    }
+//	    
 	    value += highest - lowest;
 	}
                 
         //m_PrevValue = value;
-        value += potentScore - oPotentScore + potentValue;
+        //value += potentScore - oPotentScore + potentValue;
         
         //if(value > m_PrevValue)
             //value = m_PrevValue;
