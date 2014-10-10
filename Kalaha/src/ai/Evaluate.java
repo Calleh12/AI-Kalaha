@@ -104,7 +104,7 @@ public class Evaluate
         
         if( score >= 37)
         {
-            value += 100;
+            value += 37;
             //m_Win = true;
         }
         
@@ -116,12 +116,9 @@ public class Evaluate
         int oSeed = 1;
         int tempValue = 0;
         
-        boolean steal = false;
-        boolean theft = false;
         ArrayList<Integer> seeds = new ArrayList<Integer>();
         ArrayList<Integer> oSeeds = new ArrayList<Integer>();
-        int j = 6;
-        for(int i = 0; i < 7; i++)
+        for(int i = 1; i < 7; i++)
         {
             seed = p_GameState.getSeeds(i, m_Player);
             oSeed = p_GameState.getSeeds(i, m_Opponent);
@@ -131,36 +128,54 @@ public class Evaluate
             
             if(oSeed == 0)
             {
-                tempValue = seed;
-                theft = true;
                 potentValue -= seed;
             }
             
             if(seed == 0)
             {
-                tempValue = oSeed;
-                steal = true;
                 potentValue += oSeed;
             }
             
-            if(12 + j == seed)
-            {
-                value += oSeed + 2;
-            }
-//            if(13 - j == seed)
-//                value += oSeed + 1;
-            
-            if(12 + j == oSeed)
-            {
-                value -= seed + 2;
-            }
-//            if(13 - j == oSeed)
-//                value -= seed + 1;
-            
             potentScore += seed;
             oPotentScore += oSeed;
-            j--;
         }
+	
+	for(int i = 6; i > 0; i--)
+	{
+	    seed = p_GameState.getSeeds(i, m_Player);
+            oSeed = p_GameState.getSeeds(i, m_Opponent);
+	    
+	    
+	    int highest = 0;
+	    for(int j = 0; j < i; j++)
+	    {
+		if(seeds.get(i-1) == 8 + j)
+		{
+		    if(seeds.get(j) == 0)
+		    {
+			int temp = oSeeds.get(j)*2;
+			if(temp > highest)
+			    highest = temp;
+		    }
+		}
+	    }
+	    
+	    int lowest = 0;
+	    for(int j = 0; j < i; j++)
+	    {
+		if(oSeeds.get(i-1) == 8 + j)
+		{
+		    if(oSeeds.get(j) == 0)
+		    {
+			int temp = seeds.get(j)*2;
+			if(temp > lowest)
+			    lowest = temp;
+		    }
+		}
+	    }
+	    
+	    value += highest - lowest;
+	}
                 
         //m_PrevValue = value;
         value += potentScore - oPotentScore + potentValue;
