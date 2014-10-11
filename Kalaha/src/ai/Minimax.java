@@ -41,7 +41,17 @@ public class Minimax
         
 	m_Eval = new Evaluate(m_RootGameState, p_Player);
     }
-    
+    /**
+     * 
+     * @param p_Depth, not to be confused with start depth. This depth decreases
+     * and when it reaches zero, the cutoff is reached.
+     * @param p_DepthMeter
+     * @param p_GameState, the gamestate for the affected node.
+     * @param p_Move, the previous move, which is made by the parent node.
+     * @param p_Alpha
+     * @param p_Beta
+     * @return 
+     */
     public Result depthLimitedSearch(int p_Depth, int p_DepthMeter, GameState p_GameState, int p_Move, int p_Alpha, int p_Beta)
     {
         Result res = new Result();
@@ -81,6 +91,7 @@ public class Minimax
         int alpha = p_Alpha;
         int beta = p_Beta;
         
+	//Depending if it's min or max turn
         if(nextPlayer == m_Player)
         {
             utility = -100000;
@@ -136,7 +147,14 @@ public class Minimax
         res.move = bestMove;
 	return res;
     }
-    
+    /**
+     * 
+     * 
+     * @param p_MaxTime, The max time it has to search.
+     * @param p_StartDepth, the depth level it starts at.
+     * @param p_GameState, the root state of the search.
+     * @return 
+     */
     public int iterativeDeepening(double p_MaxTime, int p_StartDepth, GameState p_GameState)
     {
 	m_MaxTime = p_MaxTime;
@@ -154,11 +172,14 @@ public class Minimax
 	while(p_MaxTime >= time)
 	{
             long timeStamp = System.currentTimeMillis();
-            
+            /* It is safe to assume that another depth will atleast take the time*2
+	    * it took for the previous depth 
+	    */
             if(p_MaxTime <= (time + lastTime))
                 break;
 	    res = depthLimitedSearch(m_Depth, 1, m_RootGameState, 0, -100000, 100000);
-            
+            //If the timeout has been reached while searching the tree it should 
+	    // abort and use the last tree best move.
             if(res.state == State.TIMEOUT.getValue())
             {
                 addText("TimeOut");
@@ -169,7 +190,8 @@ public class Minimax
             
             addText("m_Depth: " + m_Depth + " Move: " + res.move + " Value: " + res.bestValue + " it took: " + stamp);
             move = res.move;
-            
+            //A terminal state has been found and determined to be the best value
+	    //no need to dig deeper into the tree.
             if(res.state == State.TERMINAL.getValue())
             {
                 break;

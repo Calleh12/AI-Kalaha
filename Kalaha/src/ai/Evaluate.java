@@ -7,7 +7,13 @@ package ai;
 import java.util.ArrayList;
 
 import kalaha.*;
-
+    
+    /**
+     * A state in which the search can be in.
+     * Cutoff = When the depth limit has been reached.
+     * Terminal = A state where there game is ended.
+     * Timeout = The state when a search has exceeded maximum search time.
+     */
     enum State
     {
         GOOD(0),
@@ -28,7 +34,12 @@ import kalaha.*;
 	    return State;   
 	}
     }
-    
+    /**
+     * What is passed up whenever the recursive function returns.
+     * move: the move in the node.
+     * value: the value of the move.
+     * state: Which state the result is in.
+     */
     class Result
     {
 	public int move;
@@ -69,7 +80,13 @@ public class Evaluate
         m_PrevValue = -100000;
         m_Win = false;
     }
-    
+    /**
+     * Called when a terminal state is reached. It checks who is the winner,
+     * player, opponent or if it is a draw.
+     * 
+     * @param p_GameState: The current state of the game.
+     * @return the value, the value depends on who wins.
+     */
     public int calculateTerminal(GameState p_GameState)
     {
         int value = 0;
@@ -90,7 +107,14 @@ public class Evaluate
         
         return value;
     }
-    
+    /**
+     * Calculates the possible value gained from the gamestate. The value increases
+     * with different things, score gained, possible steal, possible theft and 
+     * possible potential score, the the amount of seeds a player has (hoarding).
+     * 
+     * @param p_GameState: Current state of the game.
+     * @return the value of the move depending on the state.
+     */
     public int calculateValue(GameState p_GameState)
     {
         int value = 0;
