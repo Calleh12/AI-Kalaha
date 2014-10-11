@@ -120,15 +120,6 @@ public class Evaluate
         
         value = diffScore - oDiffScore;
         
-        if(m_RootScore <= 37 && score >= 37)
-        {
-            value += 150;
-            //m_Win = true;
-        }
-        if(m_ORootScore <= 37 &&  oScore >= 37)
-        {
-            value -= 150;
-        }
         int seed = 1;
         int oSeed = 1;
         
@@ -143,17 +134,17 @@ public class Evaluate
             oSeeds.add(oSeed);
         }
         
+        int highest = 0;
+        int lowest = 0;
         for(int i = 0; i < 5; i++)
         {
-            int highest = 0;
-            int lowest = 0;
             for(int j = i+1; j < 5; j++)
 	    {
                 if(seeds.get(i) == j-i)
                 {
                     if(seeds.get(j) == 0)
                     {
-                        int temp = oSeeds.get(j);
+                        int temp = oSeeds.get(j)*2;
 			if(temp > highest)
 			    highest = temp;
                     }
@@ -163,27 +154,27 @@ public class Evaluate
                 {
                     if(oSeeds.get(j) == 0)
                     {
-                        int temp = seeds.get(j);
+                        int temp = seeds.get(j)*2;
 			if(temp > highest)
 			    highest = temp;
                     }
                 }
             }
-            
-            value += highest - lowest;
         }
 	
+        value += highest - lowest;
+        highest = 0;
+        lowest = 0;
+        
 	for(int i = 5; i >= 0; i--)
 	{
-	    int highest = 0;
-	    int lowest = 0;
 	    for(int j = i; j >= 0; j--)
 	    {
 		if(seeds.get(i) == 8 + j)
 		{
 		    if(seeds.get(j) == 0 || seeds.get(j) == 13)
 		    {
-			int temp = oSeeds.get(j);
+			int temp = oSeeds.get(j)*2;
 			if(temp > highest)
 			    highest = temp;
 		    }
@@ -193,15 +184,25 @@ public class Evaluate
 		{
 		    if(oSeeds.get(j) == 0 || oSeeds.get(j) == 13)
 		    {
-			int temp = seeds.get(j);
+			int temp = seeds.get(j)*2;
 			if(temp > lowest)
 			    lowest = temp;
 		    }
 		}
 	    }
-	    
-	    value += highest - lowest;
 	}
+        
+        value += highest - lowest;
+        
+        if(score >= 37)
+        {
+            value = 500;
+            //m_Win = true;
+        }
+        if(oScore >= 37)
+        {
+            value = -500;
+        }
         
 	return value;
     }
