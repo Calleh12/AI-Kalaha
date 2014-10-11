@@ -44,9 +44,7 @@ public class Minimax
     
     public Result depthLimitedSearch(int p_Depth, int p_DepthMeter, GameState p_GameState, int p_Move, int p_Alpha, int p_Beta)
     {
-        //ArrayList<Result> ress = new ArrayList<>();
         Result res = new Result();
-        //res.move = p_Move;
         GameState possibleGameState = p_GameState.clone();
 	if(p_Move > 0)
 	    possibleGameState.makeMove(p_Move);
@@ -133,12 +131,6 @@ public class Minimax
                 bestMove = i;
                 bestUtility = utility;
             }
-            //ress.add(res);
-            
-            if(beta <= alpha)
-            {
-             //  break;
-            }   
 	}
         res.bestValue = bestUtility;
         res.move = bestMove;

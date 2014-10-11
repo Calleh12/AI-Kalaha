@@ -74,20 +74,18 @@ public class Evaluate
     {
         int value = 0;
         int winner = p_GameState.getWinner();
-        int score = p_GameState.getScore(m_Player);
-        int oScore = p_GameState.getScore(m_Opponent);
         
         if(winner == m_Player)
 	{
-	    value = score*3;
+	    value = 1000;
 	}
 	else if(winner == 0)
 	{
-	    value = -oScore;
+	    value = -1000;
 	}
         else if(winner == m_Opponent)
 	{
-	    value = -oScore*3;
+	    value = -1000;
 	}
         
         return value;
@@ -105,10 +103,14 @@ public class Evaluate
         
         value = diffScore - oDiffScore;
         
-        if( score >= 37)
+        if(m_RootScore <= 37 && score >= 37)
         {
-            value += score;
+            value += 150;
             //m_Win = true;
+        }
+        if(m_ORootScore <= 37 &&  oScore >= 37)
+        {
+            value -= 150;
         }
         int seed = 1;
         int oSeed = 1;
@@ -122,28 +124,15 @@ public class Evaluate
             
             seeds.add(seed);
             oSeeds.add(oSeed);
-            
-//            if(oSeed == 0)
-//            {
-//                potentValue -= seed;
-//            }
-//            
-//            if(seed == 0)
-//            {
-//                potentValue += oSeed;
-//            }
-            
-            value += seed;
-            value -= oSeed;
         }
         
         for(int i = 0; i < 5; i++)
         {
             int highest = 0;
             int lowest = 0;
-            for(int j = i+1; j <= 5; j++)
+            for(int j = i+1; j < 5; j++)
 	    {
-                if(seeds.get(i) == j)
+                if(seeds.get(i) == j-i)
                 {
                     if(seeds.get(j) == 0)
                     {
@@ -153,7 +142,7 @@ public class Evaluate
                     }
                 }
                 
-                if(oSeeds.get(i) == j)
+                if(oSeeds.get(i) == j-i)
                 {
                     if(oSeeds.get(j) == 0)
                     {
@@ -175,7 +164,7 @@ public class Evaluate
 	    {
 		if(seeds.get(i) == 8 + j)
 		{
-		    if(seeds.get(j) == 13)
+		    if(seeds.get(j) == 0 || seeds.get(j) == 13)
 		    {
 			int temp = oSeeds.get(j);
 			if(temp > highest)
@@ -185,7 +174,7 @@ public class Evaluate
                 
                 if(oSeeds.get(i) == 8 + j)
 		{
-		    if(oSeeds.get(j) == 0 || oSeeds.get(j) == 0)
+		    if(oSeeds.get(j) == 0 || oSeeds.get(j) == 13)
 		    {
 			int temp = seeds.get(j);
 			if(temp > lowest)
@@ -194,27 +183,8 @@ public class Evaluate
 		}
 	    }
 	    
-//	    for(int j = i; j >= 0; j--)
-//	    {
-//		if(oSeeds.get(i) == 8 + j)
-//		{
-//		    if(oSeeds.get(j) == 0)
-//		    {
-//			int temp = seeds.get(j)*2;
-//			if(temp > lowest)
-//			    lowest = temp;
-//		    }
-//		}
-//	    }
-//	    
 	    value += highest - lowest;
 	}
-                
-        //m_PrevValue = value;
-        //value += potentScore - oPotentScore + potentValue;
-        
-        //if(value > m_PrevValue)
-            //value = m_PrevValue;
         
 	return value;
     }
