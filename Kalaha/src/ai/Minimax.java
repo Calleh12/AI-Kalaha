@@ -42,6 +42,7 @@ public class Minimax
 	m_Eval = new Evaluate(m_RootGameState, p_Player);
     }
     /**
+     * Depth limited search.
      * 
      * @param p_Depth, not to be confused with start depth. This depth decreases
      * and when it reaches zero, the cutoff is reached.
@@ -148,7 +149,7 @@ public class Minimax
 	return res;
     }
     /**
-     * 
+     * Iterative deepening search.
      * 
      * @param p_MaxTime, The max time it has to search.
      * @param p_StartDepth, the depth level it starts at.

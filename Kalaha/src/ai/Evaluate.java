@@ -46,13 +46,6 @@ import kalaha.*;
 	public int value;
         public int bestValue;
         public int state;
-        
-//        Result(int p_Value)
-//        {
-//            move = 0;
-//            value = p_Value;
-//            state = State.GOOD.getValue();
-//        }
     }
 
 /**
